@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"reflect"
 	"strconv"
 )
 
@@ -12,6 +14,12 @@ const (
 	x2 = iota
 	x3 = iota
 )
+
+type Employee struct {
+	id             int
+	employeeName   string
+	departmentName string
+}
 
 func main() {
 
@@ -253,4 +261,183 @@ func main() {
 	fmt.Println(deleteOp)
 	deleteOp1 := append(deleteOp[:1], deleteOp[2:]...)
 	fmt.Println("delete the secound element", deleteOp1)
+
+	// Maps
+	// what are they ?
+	// Creating
+	// Manipulation
+
+	statePupulations := map[string]int{
+		"california":      12345,
+		"Texas":           27345,
+		"Florida":         12345,
+		"Andhara Pradesh": 234555,
+	}
+
+	fmt.Println(statePupulations)
+
+	m := map[string][]int{
+		"numbers":      []int{1, 2, 3, 4, 5},
+		"even_numbers": []int{0, 2, 4, 6, 8},
+	}
+	m["odd_numbers"] = []int{1, 3, 5, 7, 9}
+	m["whole_numbers"] = []int{0, 1, 2, 3, 4, 5}
+
+	fmt.Println(m)
+
+	val, ok := m["whole_numbers"]
+	fmt.Println(val, ok)
+
+	// delete the elements in the map
+
+	delete(m, "whole_numbers")
+
+	fmt.Println("After delete the key", m)
+
+	// Structs
+	// What are they ?
+	// Creating
+	// Naming Conventions
+	// Embedding
+	// Tags
+
+	aEmployee := Employee{
+		id:             3,
+		employeeName:   "Subhash", // using variables names is suggested
+		departmentName: "SOFTWARE",
+	}
+
+	fmt.Println(aEmployee, aEmployee.employeeName)
+
+	// short lived time
+
+	aEmployeeDifferent := struct{ name string }{name: "manikanta"}
+	aEmployeeDifferent1 := &aEmployeeDifferent
+	aEmployeeDifferent1.name = "manikanta_1"
+	fmt.Println(aEmployeeDifferent.name)
+	fmt.Println(aEmployeeDifferent1.name)
+
+	// Embedding -- No Inheritance creates a relation
+	// Composition -- But use composition to create a relation between the structs
+
+	type Animal struct {
+		name   string
+		origin string
+	}
+
+	type Bird struct {
+		Animal
+		speedKph float32
+		canFly   bool
+	}
+
+	bird := Bird{
+		Animal:   Animal{name: "parrot", origin: "india"},
+		speedKph: 48,
+		canFly:   true,
+	}
+
+	fmt.Println(bird, "\n", bird.canFly)
+
+	// reflect packages to be used to get the type
+
+	type Vehicle struct {
+		Name   string `required max:"100"`
+		Origin string
+	}
+
+	vehicle_name_type := reflect.TypeOf(Vehicle{})
+	field, _ := vehicle_name_type.FieldByName("Name")
+	fmt.Println(field, "\n", field.Tag)
+
+	// if statements
+	// Operators
+	// if else and if else if statements
+
+	if true {
+		fmt.Println("If statemtn is true")
+	} // always curly braces should be there
+
+	if ok {
+		fmt.Println("MAP IS TRUE")
+	}
+
+	_, telanganaExists := m["Telangana"]
+	if !telanganaExists {
+		fmt.Println(" Telangana not exists")
+	}
+
+	n11 := 50
+	n2 := 70
+
+	var result1 string
+	if n11 > n2 {
+		fmt.Println(" N1 is greateer than n2")
+
+	}
+	if n11 < n2 {
+		fmt.Println(" n2 is greater than n2")
+		result1 = "n2 is grerater than n1"
+	}
+	if n11 == n2 {
+		fmt.Println("n1 is equal to n2")
+	}
+
+	if n11 <= n2 {
+		//fmt.Println("N1 is less than or equal to n2")
+		result1 = "N1 is less than or equal to n2"
+	}
+
+	if n11 < n2 || n11 == n2 {
+		//fmt.Println("N1 is less than or equal to n2")
+		result1 = "N1 is less than or equal to n2"
+	}
+
+	if false {
+		fmt.Println("Never will be executed")
+	} else {
+		fmt.Println("Always else block will be executed")
+	}
+
+	fmt.Println(result1, returnTrue())
+
+	n111 := math.Pow(2, 10)
+
+	fmt.Println(n111)
+
+	// Switch statements
+	// simple Cases
+	// cases with multiple tests
+	// Falling through
+	// Type switches
+
+	switchStatements()
+
+}
+
+func returnTrue() bool {
+	fmt.Println("function returnTrue() got called")
+	return true
+}
+
+func switchStatements() {
+
+	//Observe: No breaks are implemented
+	n1 := 1 + 5
+	switch n1 {
+	case 1:
+		fmt.Println("1 is prinitted")
+	case 2, 4, 6, 8, 10:
+		fmt.Println("2,4,6,8,10 is printed")
+	default:
+		fmt.Println("default is printed")
+	}
+	// Tag Syntaxes
+
+	switch {
+	case n1 < 10:
+		fmt.Println(" n1 is less than 10")
+	case n1 < 20:
+		fmt.Println(" n1 is less thane 20")
+	}
 }
