@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"math"
+	"net/http"
 	"reflect"
 	"strconv"
 )
@@ -412,6 +415,22 @@ func main() {
 	// Type switches
 
 	switchStatements()
+	loopingOperations()
+	loopingOperationsForMaps(statePupulations)
+
+	// Defer -- executes after the function completes
+	// open and close functions are using defer keyword
+	// so that resources are open --
+	deferExamples() // stack manner it executes
+	// Panic
+	//runTheWebServer()
+	// if panic and defer statements are present , then defer statements will be
+	// executed then the panic statements are executed.
+	// if panic is not handled then the program will exit
+	panicAndDeferStatementsAtSameTime()
+	// Recover also covered in above function
+	// Only useful in defer functions,
+	//
 
 }
 
@@ -440,4 +459,122 @@ func switchStatements() {
 	case n1 < 20:
 		fmt.Println(" n1 is less thane 20")
 	}
+	// fallthrough --> still executes the next case irrespective of true or false.
+
+	// type switches
+
+	var n1111 interface{} = "subhash"
+
+	switch n1111.(type) {
+	case int:
+		fmt.Println("n1 is of type integer")
+	case float64:
+		fmt.Println("n1 is type of float64")
+	default:
+		fmt.Println(" n1 is none of the above types")
+	}
+}
+
+func loopingOperations() {
+	fmt.Println(" Printing the for loop for 3 times")
+	for i := 0; i < 3; i++ {
+		fmt.Println("Print i for 3 times", i)
+	}
+
+	printEvenNumbersUpto10()
+}
+
+func printEvenNumbersUpto10() {
+	var x int = 10
+	fmt.Print("even numbers upto 10 ")
+	for i := 0; i < x; i++ {
+		if i%2 == 0 {
+			fmt.Print(i, " ")
+		}
+	}
+	// break keywords
+	i := 0
+	for ; i < 5; i++ {
+		if i == 4 {
+			fmt.Println("\nBreak Usage", i)
+			break
+		}
+		if i < 4 {
+			fmt.Println(" Continue usage", i)
+			continue
+		}
+	}
+
+	// Print 5 * 5 stars(*)
+
+	for i := 0; i < 5; i++ {
+		for j := 0; j < 5; j++ {
+			fmt.Print("*")
+		}
+		fmt.Println()
+	}
+
+	// range keywords
+	s := []int{1, 2, 3}
+
+	for index, val := range s {
+		fmt.Println(index, val)
+	}
+}
+
+func loopingOperationsForMaps(statePop map[string]int) {
+	for ke, val := range statePop {
+		fmt.Printf(" Key : %v, value : %v \n", ke, val)
+	}
+	// we want only values instead of ke, replace with _
+	var tempVariable1 int
+	for _, val := range statePop {
+		tempVariable1 = val
+	}
+	fmt.Println(tempVariable1)
+}
+
+func deferExamples() {
+	defer fmt.Println("first")
+	fmt.Println("secound")
+	defer fmt.Println("third")
+
+	deferExampleInRealTime()
+}
+
+func deferExampleInRealTime() {
+	res, err := http.Get("http://www.google.com/robots.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	robots, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%s\n", robots)
+}
+
+func runTheWebServer() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello Go!"))
+	})
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func panicAndDeferStatementsAtSameTime() {
+
+	fmt.Println("Panic And Defer Example")
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+		}
+	}()
+	panic("Something Bad Happen")
 }
